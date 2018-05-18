@@ -1,0 +1,13 @@
+.task {
+    padding: 2px;
+    background: white;
+    margin: 10px;
+}
+
+.task:hover {
+    cursor: pointer;
+}
+
+.task__text {
+    margin: 0;
+}
