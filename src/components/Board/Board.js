@@ -21,15 +21,16 @@ class Board extends Component {
         draggedId: null
     }
 
-    onTaskChanged = () => {
+    onDragStart = id => e => {
+        // e.dataTransfer.setData('text/html', this.dragged);
 
+        this.setState({
+            draggedId: id
+        })
     }
 
-    onDragStart = id => () => this.setState({
-        draggedId: id
-    })
-
-    onDrop = id => () => {
+    onDrop = id => e => {
+        e.preventDefault();
         const { tasks, draggedId } = this.state
 
         const draggedIndex = tasks.findIndex(item => item.id === draggedId)
@@ -55,7 +56,6 @@ class Board extends Component {
             return (
                 <Task key={i}
                     item={item} 
-                    onTaskChanged={this.onTaskChanged} 
                     onDragStart={this.onDragStart}
                     onDrop={this.onDrop} />
             );
@@ -63,7 +63,7 @@ class Board extends Component {
 
         return (
             <div className='board'>
-                {displayTasks}  
+                {displayTasks} 
             </div>
         );
     }
