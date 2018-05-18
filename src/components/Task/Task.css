@@ -1,12 +1,10 @@
-.allowDrag {
-    text-decoration: none;
-    color: black;
-}
-
 .task {
     padding: 2px;
     background: white;
     margin: 10px;
+    text-decoration: none;
+    display: block;
+    color: black;
 }
 
 .task:hover {

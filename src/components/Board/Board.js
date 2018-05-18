@@ -22,8 +22,6 @@ class Board extends Component {
     }
 
     handleOnTaskDragStart = id => e => {
-        // e.dataTransfer.setData('text/html', this.dragged);
-
         this.setState({
             draggedId: id
         })
