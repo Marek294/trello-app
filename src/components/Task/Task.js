@@ -1,15 +1,15 @@
 import React from 'react';
 import './Task.css';
 
-const onDragOver = e => e.preventDefault();
+const handleOnDragOver = e => e.preventDefault();
 
 const Task = (props) => {
-    const { item, onDragStart, onDrop } = props;
+    const { item, handleOnTaskDragStart, handleOnTaskDrop } = props;
     const { id, text } = item;
 
     return (
-        <a href="" className="allowDrag" onDragStart={onDragStart(id)}>
-            <div className="task" draggable onDragOver={onDragOver} onDrop={onDrop(id)}>
+        <a href="" className="allowDrag" onDragStart={handleOnTaskDragStart(id)}>
+            <div className="task" draggable onDragOver={handleOnDragOver} onDrop={handleOnTaskDrop(id)}>
                 <p className="task__text">{text}</p>
             </div>
         </a>

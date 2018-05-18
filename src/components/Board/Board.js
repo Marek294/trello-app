@@ -21,7 +21,7 @@ class Board extends Component {
         draggedId: null
     }
 
-    onDragStart = id => e => {
+    handleOnTaskDragStart = id => e => {
         // e.dataTransfer.setData('text/html', this.dragged);
 
         this.setState({
@@ -29,7 +29,7 @@ class Board extends Component {
         })
     }
 
-    onDrop = id => e => {
+    handleOnTaskDrop = id => e => {
         e.preventDefault();
         const { tasks, draggedId } = this.state
 
@@ -50,19 +50,22 @@ class Board extends Component {
 
     }
 
+    // onDragOverBoard = e => e.preventDefault();
+
     render() {
+        // const { onBoardDrop, id } = this.props;
         const { tasks } = this.state;
         const displayTasks = tasks.map((item,i) => {
             return (
                 <Task key={i}
                     item={item} 
-                    onDragStart={this.onDragStart}
-                    onDrop={this.onDrop} />
+                    handleOnTaskDragStart={this.handleOnTaskDragStart}
+                    handleOnTaskDrop={this.handleOnTaskDrop} />
             );
         })
 
         return (
-            <div className='board'>
+            <div className='board' >
                 {displayTasks} 
             </div>
         );
