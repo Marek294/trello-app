@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import Board from '../Board/Board';
+import './Boards.css';
 
 class Boards extends Component {
     state = {
@@ -25,29 +26,35 @@ class Boards extends Component {
                 text: 'Czwarte zadanie'
             }
         ],
-        draggedId: null
+        draggedItem: null
     }
 
-    handleOnTaskDragStart = id => e => {
+    handleOnTaskDragStart = item => e => {
         this.setState({
-            draggedId: id
+            draggedItem: item
         })
     }
 
-    handleOnTaskDrop = id => e => {
-        console.log('task drop', id);
+    getSlicedTasksArray = (tasks, draggedItem) => {
+        const draggedIndex = tasks.findIndex(item => item.id === draggedItem.id)
+
+        return {
+            element: tasks[draggedIndex],
+            newTasks: [
+                ...tasks.slice(0, draggedIndex),
+                ...tasks.slice(draggedIndex + 1)
+            ]
+        }
+
+    }
+
+    handleOnTaskDrop = boardId => id => e => {
         e.preventDefault();
-        const { tasks, draggedId } = this.state
+        const { tasks, draggedItem } = this.state
+        let { newTasks, element } = this.getSlicedTasksArray(tasks, draggedItem)
 
-        const draggedIndex = tasks.findIndex(item => item.id === draggedId)
-        const dropedIndex = tasks.findIndex(item => item.id === id)
-        const element = tasks[draggedIndex]
-
-        let newTasks = [
-        ...tasks.slice(0, draggedIndex),
-        ...tasks.slice(draggedIndex + 1)
-        ]
-
+        element.board = boardId
+        const dropedIndex = newTasks.findIndex(item => item.id === id)
         newTasks.splice(dropedIndex, 0, element)
 
         this.setState({
@@ -58,10 +65,21 @@ class Boards extends Component {
 
     onBoardDrop = id => e => {
         e.preventDefault();
-        console.log('board drop', id)
+        const { tasks, draggedItem } = this.state;
+
+        if (draggedItem.board !== id && e.target.className.includes('board')) {
+            let { newTasks, element } = this.getSlicedTasksArray(tasks, draggedItem)
+
+            element.board = id
+            newTasks.push(element)
+
+            this.setState({
+                tasks: newTasks
+            })
+        }
     }
 
-    filterTasks = boardId => {
+    boardTasks = boardId => {
         const { tasks } = this.state;
 
         return tasks.filter(item => item.board === boardId);
@@ -71,12 +89,14 @@ class Boards extends Component {
         return (
             <div className='boards'>
                 <h1 className='boards__title'>Trello App</h1>
-                {[1, 2].map(id =>
-                    <Board id={id}
-                        handleOnTaskDragStart={this.handleOnTaskDragStart}
-                        handleOnTaskDrop={this.handleOnTaskDrop}
-                        onBoardDrop={this.onBoardDrop(id)}
-                        tasks={this.filterTasks(id)} />)}
+                <div className='boards__container' >
+                    {[1, 2, 3].map(id =>
+                        <Board key={id}
+                            handleOnTaskDragStart={this.handleOnTaskDragStart}
+                            handleOnTaskDrop={this.handleOnTaskDrop(id)}
+                            onBoardDrop={this.onBoardDrop(id)}
+                            tasks={this.boardTasks(id)} />)}
+                </div>
             </div>
         );
     }
