@@ -4,34 +4,80 @@ import './Board.css';
 
 class Board extends Component {
     state = {
-        isEditing: false,
+        isDraggable: true,
+        isBoardEditing: false,
+        value: ''
     }
 
-    handleIsEditing = value => this.setState({
-        isEditing: value
+    boardIsDraggable = value => this.setState({
+        isDraggable: value
     })
+
+    handleOnBoardTitleClick = title => () => this.setState({
+        isDraggable: false,
+        isBoardEditing: true,
+        value: title
+    })
+
+    handleOnChange = e => this.setState({
+        [e.target.name]: e.target.value
+    })
+
+    handleBackdropClick = () => this.setState({
+        isDraggable: true,
+        isBoardEditing: false,
+        value: ''
+    })
+
+    handleButtonClick = () => {
+        const { handleTitleChange, item, } = this.props;
+        const { value } = this.state;
+
+        const newItem = {
+            ...item,
+            title: value
+        }
+
+        handleTitleChange(newItem, 'boards');
+
+        this.setState({
+            isDraggable: true,
+            isBoardEditing: false,
+            value: ''
+        })
+    }
 
     onDragOverBoard = e => e.preventDefault();
 
     render() {
-        const { isEditing } = this.state;
-        const { handleOnBoardDrop, tasks, handleOnTaskDragStart, handleOnTaskDrop, id, handleOnBoardDragStart, handleTaskTextChange } = this.props;
+        const { isDraggable, isBoardEditing, value } = this.state;
+        const { handleOnBoardDrop, tasks, handleOnTaskDragStart, handleOnTaskDrop, id, handleOnBoardDragStart, handleTitleChange, item: { title } } = this.props;
 
-        const displayTasks = tasks.map((item,i) => {
+        const displayTasks = tasks.map((item, i) => {
             return (
                 <Task key={i}
                     boardId={id}
-                    item={item} 
+                    item={item}
                     handleOnTaskDragStart={handleOnTaskDragStart}
                     handleOnTaskDrop={handleOnTaskDrop}
-                    handleTaskTextChange={handleTaskTextChange}
-                    handleIsEditing={this.handleIsEditing} />
+                    handleTitleChange={handleTitleChange}
+                    boardIsDraggable={this.boardIsDraggable} />
             );
         })
 
         return (
-            <div id='board' className='board' draggable={!isEditing} onDragOver={this.onDragOverBoard} onDrop={handleOnBoardDrop} onDragStart={handleOnBoardDragStart} >
-                {displayTasks} 
+            <div id='board' className='board' draggable={isDraggable} onDragOver={this.onDragOverBoard} onDrop={handleOnBoardDrop} onDragStart={handleOnBoardDragStart} >
+                {isBoardEditing ?
+                    <React.Fragment>
+                        <div className='backdrop' onClick={this.handleBackdropClick} />
+                        <div className='board--edit'>
+                            <input className='board__input' type='text' name='value' onChange={this.handleOnChange} value={value} />
+                            <button className='board__button' onClick={this.handleButtonClick} >Ok</button>
+                        </div>
+                    </React.Fragment>
+                    :
+                    <h3 className='board__title' onClick={this.handleOnBoardTitleClick(title)} >{title}</h3>}
+                {displayTasks}
             </div>
         );
     }

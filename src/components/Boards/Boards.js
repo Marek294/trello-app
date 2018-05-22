@@ -8,33 +8,36 @@ class Boards extends Component {
             {
                 id: 1,
                 board: 1,
-                text: 'Pierwsze zadanie'
+                title: 'Pierwsze zadanie'
             },
             {
                 id: 2,
                 board: 1,
-                text: 'Drugie zadanie'
+                title: 'Drugie zadanie'
             },
             {
                 id: 3,
                 board: 1,
-                text: 'Trzecie zadanie'
+                title: 'Trzecie zadanie'
             },
             {
                 id: 4,
                 board: 2,
-                text: 'Czwarte zadanie'
+                title: 'Czwarte zadanie'
             }
         ],
         boards: [
             {
-                id: 1
+                id: 1,
+                title: 'Pierwsza tablica'
             },
             {
-                id: 2
+                id: 2,
+                title: 'Druga tablica'
             },
             {
-                id: 3
+                id: 3,
+                title: 'Trzecia tablica'
             }
         ],
         draggedItem: null,
@@ -97,7 +100,7 @@ class Boards extends Component {
                 tasks: newArray
             })
 
-            return;
+            return
         }
 
         if (isBoardDragged) this.handleOnBoardDrop(boardId)
@@ -119,6 +122,7 @@ class Boards extends Component {
                     tasks: newArray
                 })
             }
+            return
         }
 
         if (isBoardDragged && draggedItem.id !== id) {
@@ -133,14 +137,14 @@ class Boards extends Component {
         }
     }
 
-    handleTaskTextChange = (newItem) => {
-        const { tasks } = this.state;
+    handleTitleChange = (newItem, arrayNameString) => {
+        const array = this.state[arrayNameString];
 
-        const itemIndex = tasks.findIndex(item => item.id === newItem.id)
-        tasks.splice(itemIndex, 1, newItem);
+        const itemIndex = array.findIndex(item => item.id === newItem.id)
+        array.splice(itemIndex, 1, newItem);
 
         this.setState({
-            tasks
+            [arrayNameString]: array
         })
     }
 
@@ -152,9 +156,10 @@ class Boards extends Component {
                 <div className='boards__container' >
                     {boards.map(item =>
                         <Board key={item.id}
+                            item={item}
                             handleOnTaskDragStart={this.handleOnTaskDragStart}
                             handleOnTaskDrop={this.handleOnTaskDrop(item.id)}
-                            handleTaskTextChange={this.handleTaskTextChange}
+                            handleTitleChange={this.handleTitleChange}
                             handleOnBoardDragStart={this.handleOnBoardDragStart(item)}
                             handleOnBoardDrop={this.handleOnBoardDrop(item.id)}
                             tasks={this.boardTasks(item.id)} />)}

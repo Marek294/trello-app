@@ -12,26 +12,26 @@ class Task extends Component {
     showModal = e => {
         e.preventDefault();
 
-        const { item, handleIsEditing } = this.props
-        handleIsEditing(true);
+        const { item, boardIsDraggable } = this.props
+        boardIsDraggable(false);
 
         this.setState({
             isEditing: true,
-            value: item.text
+            value: item.title
         })
     }
 
     handleButtonClick = () => {
-        const { handleTaskTextChange, item, handleIsEditing } = this.props;
+        const { handleTitleChange, item, boardIsDraggable } = this.props;
         const { value } = this.state;
 
         const newItem = {
             ...item,
-            text: value
+            title: value
         }
 
-        handleTaskTextChange(newItem);
-        handleIsEditing(false);
+        handleTitleChange(newItem, 'tasks');
+        boardIsDraggable(true);
 
         this.setState({
             isEditing: false,
@@ -40,8 +40,8 @@ class Task extends Component {
     }
 
     handleBackdropClick = () => {
-        const { handleIsEditing } = this.props;
-        handleIsEditing(false);
+        const { boardIsDraggable } = this.props;
+        boardIsDraggable(true);
 
         this.setState({
             isEditing: false,
@@ -56,17 +56,17 @@ class Task extends Component {
     render() {
         const { isEditing, value } = this.state;
         const { item, handleOnTaskDragStart, handleOnTaskDrop } = this.props;
-        const { id, text } = item;
+        const { id, title } = item;
 
         return (
             isEditing ?
-                <div className='modal'>
+                <React.Fragment>
                     <div className='backdrop' onClick={this.handleBackdropClick} />
                     <div className='task task--edit'>
                         <input className='task__input' type='text' name='value' onChange={this.handleOnChange} value={value} />
                         <button className='task__button' onClick={this.handleButtonClick} >Ok</button>
                     </div>
-                </div>
+                </React.Fragment>
                 :
                 <a id='task'
                     href=""
@@ -76,7 +76,7 @@ class Task extends Component {
                     onDragOver={handleOnDragOver}
                     onDrop={handleOnTaskDrop(id)}
                     onClick={this.showModal} >
-                    {text}
+                    {title}
                 </a>
         );
     }

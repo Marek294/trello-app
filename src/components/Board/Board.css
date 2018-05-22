@@ -6,6 +6,27 @@
     margin: 20px;
 }
 
-.boards__title {
-    text-align: center;
+.board__title {
+    margin: 0 0 20px 0;
+}
+
+.board__input {
+    border: none;
+    width: 79%;
+}
+
+.board--edit {
+    margin: 0 0 20px 0;
+    position: relative;
+    z-index: 60;
+}
+
+.backdrop {
+    position: absolute;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+    background: rgba(0,0,0,0.3);
+    z-index: 50;
 }
