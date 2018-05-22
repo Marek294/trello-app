@@ -39,26 +39,13 @@ class Boards extends Component {
         ],
         draggedItem: null,
         isTaskDragged: false,
-        isBoardDragged: false
+        isBoardDragged: false,
     }
 
-    handleOnTaskDragStart = item => e => {
-        this.setState({
-            draggedItem: item,
-            isTaskDragged: true,
-            isBoardDragged: false
-        })
-    }
+    boardTasks = boardId => {
+        const { tasks } = this.state;
 
-    handleOnBoardDragStart = item => e => {
-        if(e.target.id === 'board') {
-            e.dataTransfer.setData('item', item)
-            this.setState({
-                draggedItem: item,
-                isBoardDragged: true,
-                isTaskDragged: false
-            })
-        }
+        return tasks.filter(item => item.board === boardId);
     }
 
     getSlicedArray = (array, draggedItem, dropedId) => {
@@ -76,11 +63,30 @@ class Boards extends Component {
 
     }
 
+    handleOnTaskDragStart = item => e => {
+        this.setState({
+            draggedItem: item,
+            isTaskDragged: true,
+            isBoardDragged: false
+        })
+    }
+
+    handleOnBoardDragStart = item => e => {
+        if (e.target.id === 'board') {
+            e.dataTransfer.setData('item', item)
+            this.setState({
+                draggedItem: item,
+                isBoardDragged: true,
+                isTaskDragged: false
+            })
+        }
+    }
+
     handleOnTaskDrop = boardId => id => e => {
         e.preventDefault();
-        const { tasks, boards, draggedItem, isTaskDragged, isBoardDragged } = this.state
+        const { tasks, draggedItem, isTaskDragged, isBoardDragged } = this.state
 
-        if(isTaskDragged) {
+        if (isTaskDragged && draggedItem.id !== id) {
             let { newArray, element, position } = this.getSlicedArray(tasks, draggedItem, id)
 
             element.board = boardId
@@ -94,7 +100,7 @@ class Boards extends Component {
             return;
         }
 
-        if(isBoardDragged) this.handleOnBoardDrop(boardId)
+        if (isBoardDragged) this.handleOnBoardDrop(boardId)
 
     }
 
@@ -102,7 +108,7 @@ class Boards extends Component {
         e.preventDefault();
         const { tasks, boards, draggedItem, isTaskDragged, isBoardDragged } = this.state;
 
-        if(isTaskDragged) {
+        if (isTaskDragged) {
             if (draggedItem.board !== id && e.target.id === 'board') {
                 let { newArray, element } = this.getSlicedArray(tasks, draggedItem)
 
@@ -115,7 +121,7 @@ class Boards extends Component {
             }
         }
 
-        if(isBoardDragged) {
+        if (isBoardDragged && draggedItem.id !== id) {
             let { newArray, element, position } = this.getSlicedArray(boards, draggedItem, id)
 
             const dropedIndex = newArray.findIndex(item => item.id === id)
@@ -127,10 +133,15 @@ class Boards extends Component {
         }
     }
 
-    boardTasks = boardId => {
+    handleTaskTextChange = (newItem) => {
         const { tasks } = this.state;
 
-        return tasks.filter(item => item.board === boardId);
+        const itemIndex = tasks.findIndex(item => item.id === newItem.id)
+        tasks.splice(itemIndex, 1, newItem);
+
+        this.setState({
+            tasks
+        })
     }
 
     render() {
@@ -143,6 +154,7 @@ class Boards extends Component {
                         <Board key={item.id}
                             handleOnTaskDragStart={this.handleOnTaskDragStart}
                             handleOnTaskDrop={this.handleOnTaskDrop(item.id)}
+                            handleTaskTextChange={this.handleTaskTextChange}
                             handleOnBoardDragStart={this.handleOnBoardDragStart(item)}
                             handleOnBoardDrop={this.handleOnBoardDrop(item.id)}
                             tasks={this.boardTasks(item.id)} />)}
