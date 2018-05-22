@@ -26,23 +26,47 @@ class Boards extends Component {
                 text: 'Czwarte zadanie'
             }
         ],
-        draggedItem: null
+        boards: [
+            {
+                id: 1
+            },
+            {
+                id: 2
+            },
+            {
+                id: 3
+            }
+        ],
+        draggedItem: null,
+        isTaskDragged: false,
+        isBoardDragged: false
     }
 
     handleOnTaskDragStart = item => e => {
         this.setState({
-            draggedItem: item
+            draggedItem: item,
+            isTaskDragged: true,
+            isBoardDragged: false
         })
     }
 
-    getSlicedTasksArray = (tasks, draggedItem) => {
-        const draggedIndex = tasks.findIndex(item => item.id === draggedItem.id)
+    handleOnBoardDragStart = item => e => {
+        if(e.target.id === 'board')
+            this.setState({
+                draggedItem: item,
+                isBoardDragged: true,
+                isTaskDragged: false
+            })
+    }
+
+    getSlicedArray = (array, draggedItem) => {
+        const draggedIndex = array.findIndex(item => item.id === draggedItem.id)
 
         return {
-            element: tasks[draggedIndex],
-            newTasks: [
-                ...tasks.slice(0, draggedIndex),
-                ...tasks.slice(draggedIndex + 1)
+            element: array[draggedIndex],
+            newArray: [
+                ...array.slice(0, draggedIndex),
+                ...array.slice(draggedIndex + 1)
             ]
         }
 
@@ -50,31 +74,51 @@ class Boards extends Component {
 
     handleOnTaskDrop = boardId => id => e => {
         e.preventDefault();
-        const { tasks, draggedItem } = this.state
-        let { newTasks, element } = this.getSlicedTasksArray(tasks, draggedItem)
+        const { tasks, boards, draggedItem, isTaskDragged, isBoardDragged } = this.state
 
-        element.board = boardId
-        const dropedIndex = newTasks.findIndex(item => item.id === id)
-        newTasks.splice(dropedIndex, 0, element)
+        if(isTaskDragged) {
+            let { newArray, element } = this.getSlicedArray(tasks, draggedItem)
 
-        this.setState({
-            tasks: newTasks
-        })
+            element.board = boardId
+            const dropedIndex = newArray.findIndex(item => item.id === id)
+            newArray.splice(dropedIndex, 0, element)
+
+            this.setState({
+                tasks: newArray
+            })
+
+            return;
+        }
+
+        if(isBoardDragged) this.handleOnBoardDrop(boardId)
 
     }
 
-    onBoardDrop = id => e => {
+    handleOnBoardDrop = id => e => {
         e.preventDefault();
-        const { tasks, draggedItem } = this.state;
+        const { tasks, boards, draggedItem, isTaskDragged, isBoardDragged } = this.state;
 
-        if (draggedItem.board !== id && e.target.className.includes('board')) {
-            let { newTasks, element } = this.getSlicedTasksArray(tasks, draggedItem)
+        if(isTaskDragged) {
+            if (draggedItem.board !== id && e.target.id === 'board') {
+                let { newArray, element } = this.getSlicedArray(tasks, draggedItem)
 
-            element.board = id
-            newTasks.push(element)
+                element.board = id
+                newArray.push(element)
+
+                this.setState({
+                    tasks: newArray
+                })
+            }
+        }
+
+        if(isBoardDragged) {
+            let { newArray, element } = this.getSlicedArray(boards, draggedItem)
+
+            const dropedIndex = newArray.findIndex(item => item.id === id)
+            newArray.splice(dropedIndex, 0, element)
 
             this.setState({
-                tasks: newTasks
+                boards: newArray
             })
         }
     }
@@ -86,16 +130,18 @@ class Boards extends Component {
     }
 
     render() {
+        const { boards } = this.state;
         return (
             <div className='boards'>
                 <h1 className='boards__title'>Trello App</h1>
                 <div className='boards__container' >
-                    {[1, 2, 3].map(id =>
-                        <Board key={id}
+                    {boards.map(item =>
+                        <Board key={item.id}
                             handleOnTaskDragStart={this.handleOnTaskDragStart}
-                            handleOnTaskDrop={this.handleOnTaskDrop(id)}
-                            onBoardDrop={this.onBoardDrop(id)}
-                            tasks={this.boardTasks(id)} />)}
+                            handleOnTaskDrop={this.handleOnTaskDrop(item.id)}
+                            handleOnBoardDragStart={this.handleOnBoardDragStart(item)}
+                            handleOnBoardDrop={this.handleOnBoardDrop(item.id)}
+                            tasks={this.boardTasks(item.id)} />)}
                 </div>
             </div>
         );

@@ -6,7 +6,7 @@ class Board extends Component {
     onDragOverBoard = e => e.preventDefault();
 
     render() {
-        const { onBoardDrop, tasks, handleOnTaskDragStart, handleOnTaskDrop, id } = this.props;
+        const { handleOnBoardDrop, tasks, handleOnTaskDragStart, handleOnTaskDrop, id, handleOnBoardDragStart } = this.props;
 
         const displayTasks = tasks.map((item,i) => {
             return (
@@ -19,7 +19,7 @@ class Board extends Component {
         })
 
         return (
-            <div className='board' onDragOver={this.onDragOverBoard} onDrop={onBoardDrop} >
+            <div id='board' className='board' draggable onDragOver={this.onDragOverBoard} onDrop={handleOnBoardDrop} onDragStart={handleOnBoardDragStart} >
                 {displayTasks} 
             </div>
         );
