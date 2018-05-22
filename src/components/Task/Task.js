@@ -8,8 +8,8 @@ const Task = (props) => {
     const { id, text } = item;
 
     return (
-        <a id='task' href="" className="task" draggable onDragStart={handleOnTaskDragStart(item)} onDragOver={handleOnDragOver} onDrop={handleOnTaskDrop(id)}>
-            <p className="task__text">{text}</p>
+        <a id='task' href="" className='task' draggable onDragStart={handleOnTaskDragStart(item)} onDragOver={handleOnDragOver} onDrop={handleOnTaskDrop(id)}>
+            {text}
         </a>
     );
 };

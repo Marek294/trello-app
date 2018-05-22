@@ -51,23 +51,27 @@ class Boards extends Component {
     }
 
     handleOnBoardDragStart = item => e => {
-        if(e.target.id === 'board')
+        if(e.target.id === 'board') {
+            e.dataTransfer.setData('item', item)
             this.setState({
                 draggedItem: item,
                 isBoardDragged: true,
                 isTaskDragged: false
             })
+        }
     }
 
-    getSlicedArray = (array, draggedItem) => {
+    getSlicedArray = (array, draggedItem, dropedId) => {
         const draggedIndex = array.findIndex(item => item.id === draggedItem.id)
+        const dropedIndex = array.findIndex(item => item.id === dropedId)
 
         return {
             element: array[draggedIndex],
             newArray: [
                 ...array.slice(0, draggedIndex),
                 ...array.slice(draggedIndex + 1)
-            ]
+            ],
+            position: draggedIndex > dropedIndex ? 0 : 1
         }
 
     }
@@ -77,11 +81,11 @@ class Boards extends Component {
         const { tasks, boards, draggedItem, isTaskDragged, isBoardDragged } = this.state
 
         if(isTaskDragged) {
-            let { newArray, element } = this.getSlicedArray(tasks, draggedItem)
+            let { newArray, element, position } = this.getSlicedArray(tasks, draggedItem, id)
 
             element.board = boardId
             const dropedIndex = newArray.findIndex(item => item.id === id)
-            newArray.splice(dropedIndex, 0, element)
+            newArray.splice(dropedIndex + position, 0, element)
 
             this.setState({
                 tasks: newArray
@@ -112,10 +116,10 @@ class Boards extends Component {
         }
 
         if(isBoardDragged) {
-            let { newArray, element } = this.getSlicedArray(boards, draggedItem)
+            let { newArray, element, position } = this.getSlicedArray(boards, draggedItem, id)
 
             const dropedIndex = newArray.findIndex(item => item.id === id)
-            newArray.splice(dropedIndex, 0, element)
+            newArray.splice(dropedIndex + position, 0, element)
 
             this.setState({
                 boards: newArray
