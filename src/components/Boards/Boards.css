@@ -1,6 +1,8 @@
 .boards__container {
+    padding: 50px;
     display: flex;
     flex-direction: row;
+    justify-content: center;
 }
 
 .boards__title {
