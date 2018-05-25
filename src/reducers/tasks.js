@@ -5,6 +5,9 @@ const getSlicedArray = (array, draggedItem, dropedId, boardId) => {
     const dropedIndex = array.findIndex(item => item.id === dropedId)
 
     const element = array[draggedIndex];
+
+    const position = (draggedIndex > dropedIndex || element.board !== boardId) ? 0 : 1
+
     element.board = boardId;
 
     return {
@@ -13,7 +16,7 @@ const getSlicedArray = (array, draggedItem, dropedId, boardId) => {
             ...array.slice(0, draggedIndex),
             ...array.slice(draggedIndex + 1)
         ],
-        position: draggedIndex > dropedIndex ? 0 : 1
+        position
     }
 
 }

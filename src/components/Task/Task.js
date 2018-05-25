@@ -3,8 +3,6 @@ import { connect } from 'react-redux';
 import { changeTaskTitle } from '../../actions/tasks';
 import './Task.css';
 
-const handleOnDragOver = e => e.preventDefault();
-
 class Task extends Component {
     state = {
         isEditing: false,
@@ -55,6 +53,8 @@ class Task extends Component {
         [e.target.name]: e.target.value
     })
 
+    handleOnDragOver = e => e.preventDefault();
+
     render() {
         const { isEditing, value } = this.state;
         const { item, handleOnTaskDragStart, handleOnTaskDrop } = this.props;
@@ -75,7 +75,7 @@ class Task extends Component {
                     className='task'
                     draggable
                     onDragStart={handleOnTaskDragStart(item)}
-                    onDragOver={handleOnDragOver}
+                    onDragOver={this.handleOnDragOver}
                     onDrop={handleOnTaskDrop(id)}
                     onClick={this.showModal} >
                     {title}

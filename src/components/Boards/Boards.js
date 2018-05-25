@@ -19,6 +19,8 @@ class Boards extends Component {
     }
 
     handleOnTaskDragStart = item => e => {
+        e.stopPropagation();
+
         this.setState({
             draggedItem: item,
             isTaskDragged: true,
@@ -27,31 +29,35 @@ class Boards extends Component {
     }
 
     handleOnBoardDragStart = item => e => {
-        if (e.target.id === 'board') {
-            e.dataTransfer.setData('item', item)
-            this.setState({
-                draggedItem: item,
-                isBoardDragged: true,
-                isTaskDragged: false
-            })
-        }
+        e.stopPropagation();
+        e.dataTransfer.setData('item', item)
+
+        this.setState({
+            draggedItem: item,
+            isBoardDragged: true,
+            isTaskDragged: false
+        })
     }
 
     handleOnTaskDrop = boardId => id => e => {
         e.preventDefault();
+        if(e.stopPropagation) e.stopPropagation();
+
         const { draggedItem, isTaskDragged, isBoardDragged } = this.state
 
         if (isTaskDragged && draggedItem.id !== id) return this.props.changeTaskPosition(draggedItem, id, boardId);
-        if (isBoardDragged) return this.handleOnBoardDrop(boardId)
+        if (isBoardDragged) return this.handleOnBoardDrop(boardId)(e)
 
     }
 
     handleOnBoardDrop = id => e => {
         e.preventDefault();
+        e.stopPropagation();
+
         const { draggedItem, isTaskDragged, isBoardDragged } = this.state;
 
         if (isTaskDragged) {
-            if (draggedItem.board !== id && e.target.id === 'board') this.props.changeTaskBoard(draggedItem, id);
+            if (draggedItem.board !== id) this.props.changeTaskBoard(draggedItem, id);
             return
         }
 

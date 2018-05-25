@@ -68,7 +68,7 @@ class Board extends Component {
         })
 
         return (
-            <div id='board' className='board' draggable={isDraggable} onDragOver={this.onDragOverBoard} onDrop={handleOnBoardDrop} onDragStart={handleOnBoardDragStart} >
+            <div className='board' draggable={isDraggable} onDragOver={this.onDragOverBoard} onDrop={handleOnBoardDrop} onDragStart={handleOnBoardDragStart} >
                 {isBoardEditing ?
                     <React.Fragment>
                         <div className='backdrop' onClick={this.handleBackdropClick} />
