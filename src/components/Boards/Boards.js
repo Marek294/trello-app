@@ -2,24 +2,11 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import Board from '../Board/Board';
 import { changeTaskPosition, changeTaskBoard } from '../../actions/tasks';
+import { changeBoardPosition } from '../../actions/boards';
 import './Boards.css';
 
 class Boards extends Component {
     state = {
-        boards: [
-            {
-                id: 1,
-                title: 'Pierwsza tablica'
-            },
-            {
-                id: 2,
-                title: 'Druga tablica'
-            },
-            {
-                id: 3,
-                title: 'Trzecia tablica'
-            }
-        ],
         draggedItem: null,
         isTaskDragged: false,
         isBoardDragged: false,
@@ -83,16 +70,7 @@ class Boards extends Component {
             return
         }
 
-        if (isBoardDragged && draggedItem.id !== id) {
-            let { newArray, element, position } = this.getSlicedArray(boards, draggedItem, id)
-
-            const dropedIndex = newArray.findIndex(item => item.id === id)
-            newArray.splice(dropedIndex + position, 0, element)
-
-            this.setState({
-                boards: newArray
-            })
-        }
+        if (isBoardDragged && draggedItem.id !== id) return this.props.changeBoardPosition(draggedItem, id);
     }
 
     handleTitleChange = (newItem, arrayNameString) => {
@@ -107,7 +85,7 @@ class Boards extends Component {
     }
 
     render() {
-        const { boards } = this.state;
+        const { boards } = this.props;
         return (
             <div className='boards'>
                 <h1 className='boards__title'>Trello App</h1>
@@ -129,13 +107,15 @@ class Boards extends Component {
 
 const mapStateToProps = state => {
     return {
-        tasks: state.tasks
+        tasks: state.tasks,
+        boards: state.boards
     }
 }
 
 const mapDispatchToProps = dispatch => ({
     changeTaskPosition: (draggedItem, dropedTaskId, boardId) => dispatch(changeTaskPosition(draggedItem, dropedTaskId, boardId)),
-    changeTaskBoard: (draggedItem, boardId) => dispatch(changeTaskBoard(draggedItem, boardId))
+    changeTaskBoard: (draggedItem, boardId) => dispatch(changeTaskBoard(draggedItem, boardId)),
+    changeBoardPosition: (draggedItem, dropedBoardId) => dispatch(changeBoardPosition(draggedItem, dropedBoardId))
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(Boards);
