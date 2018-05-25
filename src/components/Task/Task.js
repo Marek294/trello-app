@@ -1,4 +1,6 @@
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
+import { changeTaskTitle } from '../../actions/tasks';
 import './Task.css';
 
 const handleOnDragOver = e => e.preventDefault();
@@ -22,7 +24,7 @@ class Task extends Component {
     }
 
     handleButtonClick = () => {
-        const { handleTitleChange, item, boardIsDraggable } = this.props;
+        const { item, boardIsDraggable } = this.props;
         const { value } = this.state;
 
         const newItem = {
@@ -30,7 +32,7 @@ class Task extends Component {
             title: value
         }
 
-        handleTitleChange(newItem, 'tasks');
+        this.props.changeTaskTitle(newItem);
         boardIsDraggable(true);
 
         this.setState({
@@ -82,4 +84,8 @@ class Task extends Component {
     }
 }
 
-export default Task;
+const mapDispatchToProps = dispatch => ({
+    changeTaskTitle: newItem => dispatch(changeTaskTitle(newItem))
+})
+
+export default connect(null, mapDispatchToProps)(Task);

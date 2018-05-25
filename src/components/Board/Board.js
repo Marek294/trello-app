@@ -1,4 +1,6 @@
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
+import { changeBoardTitle } from '../../actions/boards';
 import Task from '../Task/Task';
 import './Board.css';
 
@@ -30,7 +32,7 @@ class Board extends Component {
     })
 
     handleButtonClick = () => {
-        const { handleTitleChange, item, } = this.props;
+        const { item } = this.props;
         const { value } = this.state;
 
         const newItem = {
@@ -38,7 +40,7 @@ class Board extends Component {
             title: value
         }
 
-        handleTitleChange(newItem, 'boards');
+        this.props.changeBoardTitle(newItem);
 
         this.setState({
             isDraggable: true,
@@ -83,4 +85,8 @@ class Board extends Component {
     }
 }
 
-export default Board;
+const mapDispatchToProps = dispatch => ({
+    changeBoardTitle: newItem => dispatch(changeBoardTitle(newItem))
+})
+
+export default connect(null, mapDispatchToProps)(Board);
