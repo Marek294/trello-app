@@ -18,21 +18,6 @@ class Boards extends Component {
         return tasks.filter(item => item.board === boardId);
     }
 
-    getSlicedArray = (array, draggedItem, dropedId) => {
-        const draggedIndex = array.findIndex(item => item.id === draggedItem.id)
-        const dropedIndex = array.findIndex(item => item.id === dropedId)
-
-        return {
-            element: array[draggedIndex],
-            newArray: [
-                ...array.slice(0, draggedIndex),
-                ...array.slice(draggedIndex + 1)
-            ],
-            position: draggedIndex > dropedIndex ? 0 : 1
-        }
-
-    }
-
     handleOnTaskDragStart = item => e => {
         this.setState({
             draggedItem: item,
@@ -63,7 +48,7 @@ class Boards extends Component {
 
     handleOnBoardDrop = id => e => {
         e.preventDefault();
-        const { boards, draggedItem, isTaskDragged, isBoardDragged } = this.state;
+        const { draggedItem, isTaskDragged, isBoardDragged } = this.state;
 
         if (isTaskDragged) {
             if (draggedItem.board !== id && e.target.id === 'board') this.props.changeTaskBoard(draggedItem, id);
@@ -71,17 +56,6 @@ class Boards extends Component {
         }
 
         if (isBoardDragged && draggedItem.id !== id) return this.props.changeBoardPosition(draggedItem, id);
-    }
-
-    handleTitleChange = (newItem, arrayNameString) => {
-        const array = this.state[arrayNameString];
-
-        const itemIndex = array.findIndex(item => item.id === newItem.id)
-        array.splice(itemIndex, 1, newItem);
-
-        this.setState({
-            [arrayNameString]: array
-        })
     }
 
     render() {
@@ -95,7 +69,6 @@ class Boards extends Component {
                             item={item}
                             handleOnTaskDragStart={this.handleOnTaskDragStart}
                             handleOnTaskDrop={this.handleOnTaskDrop(item.id)}
-                            handleTitleChange={this.handleTitleChange}
                             handleOnBoardDragStart={this.handleOnBoardDragStart(item)}
                             handleOnBoardDrop={this.handleOnBoardDrop(item.id)}
                             tasks={this.boardTasks(item.id)} />)}

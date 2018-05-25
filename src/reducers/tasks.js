@@ -1,4 +1,4 @@
-import { CHANGE_TASK_BOARD, CHANGE_TASK_POSITION } from '../actions/types';
+import { CHANGE_TASK_BOARD, CHANGE_TASK_POSITION, CHANGE_TASK_TITLE } from '../actions/types';
 
 const getSlicedArray = (array, draggedItem, dropedId, boardId) => {
     const draggedIndex = array.findIndex(item => item.id === draggedItem.id)
@@ -58,6 +58,14 @@ export default (state = tasks, action) => {
             newArray.push(element)
 
             return newArray
+
+        case CHANGE_TASK_TITLE:
+            const array = state.slice();
+
+            const itemIndex = array.findIndex(item => item.id === action.newItem.id)
+            array.splice(itemIndex, 1, action.newItem);
+
+            return array;
 
         default:
             return state;

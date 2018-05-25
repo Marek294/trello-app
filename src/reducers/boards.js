@@ -1,4 +1,4 @@
-import { CHANGE_BOARD_POSITION } from '../actions/types';
+import { CHANGE_BOARD_POSITION, CHANGE_BOARD_TITLE } from '../actions/types';
 
 const getSlicedArray = (array, draggedItem, dropedBoardId) => {
     const draggedIndex = array.findIndex(item => item.id === draggedItem.id)
@@ -42,6 +42,14 @@ export default (state = boards, action) => {
             newArray.splice(dropedIndex + position, 0, element)
 
             return newArray
+
+        case CHANGE_BOARD_TITLE:
+            const array = state.slice();
+
+            const itemIndex = array.findIndex(item => item.id === action.newItem.id)
+            array.splice(itemIndex, 1, action.newItem);
+
+            return array;
 
         default:
             return state;
