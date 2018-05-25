@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
 import Board from '../Board/Board';
 import './Boards.css';
 
@@ -46,7 +47,7 @@ class Boards extends Component {
     }
 
     boardTasks = boardId => {
-        const { tasks } = this.state;
+        const { tasks } = this.props;
 
         return tasks.filter(item => item.board === boardId);
     }
@@ -169,4 +170,10 @@ class Boards extends Component {
     }
 }
 
-export default Boards;
+const mapStateToProps = state => {
+    return {
+        tasks: state.tasks
+    }
+}
+
+export default connect(mapStateToProps)(Boards);
