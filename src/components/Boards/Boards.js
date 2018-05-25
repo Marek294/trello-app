@@ -1,32 +1,11 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import Board from '../Board/Board';
+import { changeTaskPosition, changeTaskBoard } from '../../actions/tasks';
 import './Boards.css';
 
 class Boards extends Component {
     state = {
-        tasks: [
-            {
-                id: 1,
-                board: 1,
-                title: 'Pierwsze zadanie'
-            },
-            {
-                id: 2,
-                board: 1,
-                title: 'Drugie zadanie'
-            },
-            {
-                id: 3,
-                board: 1,
-                title: 'Trzecie zadanie'
-            },
-            {
-                id: 4,
-                board: 2,
-                title: 'Czwarte zadanie'
-            }
-        ],
         boards: [
             {
                 id: 1,
@@ -88,41 +67,19 @@ class Boards extends Component {
 
     handleOnTaskDrop = boardId => id => e => {
         e.preventDefault();
-        const { tasks, draggedItem, isTaskDragged, isBoardDragged } = this.state
+        const { draggedItem, isTaskDragged, isBoardDragged } = this.state
 
-        if (isTaskDragged && draggedItem.id !== id) {
-            let { newArray, element, position } = this.getSlicedArray(tasks, draggedItem, id)
-
-            element.board = boardId
-            const dropedIndex = newArray.findIndex(item => item.id === id)
-            newArray.splice(dropedIndex + position, 0, element)
-
-            this.setState({
-                tasks: newArray
-            })
-
-            return
-        }
-
-        if (isBoardDragged) this.handleOnBoardDrop(boardId)
+        if (isTaskDragged && draggedItem.id !== id) return this.props.changeTaskPosition(draggedItem, id, boardId);
+        if (isBoardDragged) return this.handleOnBoardDrop(boardId)
 
     }
 
     handleOnBoardDrop = id => e => {
         e.preventDefault();
-        const { tasks, boards, draggedItem, isTaskDragged, isBoardDragged } = this.state;
+        const { boards, draggedItem, isTaskDragged, isBoardDragged } = this.state;
 
         if (isTaskDragged) {
-            if (draggedItem.board !== id && e.target.id === 'board') {
-                let { newArray, element } = this.getSlicedArray(tasks, draggedItem)
-
-                element.board = id
-                newArray.push(element)
-
-                this.setState({
-                    tasks: newArray
-                })
-            }
+            if (draggedItem.board !== id && e.target.id === 'board') this.props.changeTaskBoard(draggedItem, id);
             return
         }
 
@@ -176,4 +133,9 @@ const mapStateToProps = state => {
     }
 }
 
-export default connect(mapStateToProps)(Boards);
+const mapDispatchToProps = dispatch => ({
+    changeTaskPosition: (draggedItem, dropedTaskId, boardId) => dispatch(changeTaskPosition(draggedItem, dropedTaskId, boardId)),
+    changeTaskBoard: (draggedItem, boardId) => dispatch(changeTaskBoard(draggedItem, boardId))
+})
+
+export default connect(mapStateToProps, mapDispatchToProps)(Boards);
