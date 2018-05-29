@@ -12,21 +12,21 @@ class Task extends Component {
   showModal = e => {
     e.preventDefault();
 
-    const { item, boardIsDraggable } = this.props;
+    const { task, boardIsDraggable } = this.props;
     boardIsDraggable(false);
 
     this.setState({
       isEditing: true,
-      value: item.title
+      value: task.title
     });
   };
 
   handleButtonClick = () => {
-    const { item, boardIsDraggable } = this.props;
+    const { task, boardIsDraggable } = this.props;
     const { value } = this.state;
 
     const newItem = {
-      ...item,
+      ...task,
       title: value
     };
 
