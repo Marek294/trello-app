@@ -57,8 +57,8 @@ class Task extends Component {
 
     render() {
         const { isEditing, value } = this.state;
-        const { item, handleOnTaskDragStart, handleOnTaskDrop } = this.props;
-        const { id, title } = item;
+        const { task, handleOnTaskDragStart, handleOnTaskDrop } = this.props;
+        const { id, title } = task;
 
         return (
             isEditing ?
@@ -74,7 +74,7 @@ class Task extends Component {
                     href=""
                     className='task'
                     draggable
-                    onDragStart={handleOnTaskDragStart(item)}
+                    onDragStart={handleOnTaskDragStart(task)}
                     onDragOver={this.handleOnDragOver}
                     onDrop={handleOnTaskDrop(id)}
                     onClick={this.showModal} >

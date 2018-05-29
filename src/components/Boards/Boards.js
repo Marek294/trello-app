@@ -39,29 +39,29 @@ class Boards extends Component {
         })
     }
 
-    handleOnTaskDrop = boardId => id => e => {
+    handleOnTaskDrop = boardId => taskId => e => {
         e.preventDefault();
         if(e.stopPropagation) e.stopPropagation();
 
         const { draggedItem, isTaskDragged, isBoardDragged } = this.state
 
-        if (isTaskDragged && draggedItem.id !== id) return this.props.changeTaskPosition(draggedItem, id, boardId);
+        if (isTaskDragged && draggedItem.id !== taskId) return this.props.changeTaskPosition(draggedItem, taskId, boardId);
         if (isBoardDragged) return this.handleOnBoardDrop(boardId)(e)
 
     }
 
-    handleOnBoardDrop = id => e => {
+    handleOnBoardDrop = boardId => e => {
         e.preventDefault();
         e.stopPropagation();
 
         const { draggedItem, isTaskDragged, isBoardDragged } = this.state;
 
         if (isTaskDragged) {
-            if (draggedItem.board !== id) this.props.changeTaskBoard(draggedItem, id);
+            if (draggedItem.board !== boardId) this.props.changeTaskBoard(draggedItem, boardId);
             return
         }
 
-        if (isBoardDragged && draggedItem.id !== id) return this.props.changeBoardPosition(draggedItem, id);
+        if (isBoardDragged && draggedItem.id !== boardId) return this.props.changeBoardPosition(draggedItem, boardId);
     }
 
     render() {
@@ -70,14 +70,14 @@ class Boards extends Component {
             <div className='boards'>
                 <h1 className='boards__title'>Trello App</h1>
                 <div className='boards__container' >
-                    {boards.map(item =>
-                        <Board key={item.id}
-                            item={item}
+                    {boards.map(board =>
+                        <Board key={board.id}
+                            board={board}
                             handleOnTaskDragStart={this.handleOnTaskDragStart}
-                            handleOnTaskDrop={this.handleOnTaskDrop(item.id)}
-                            handleOnBoardDragStart={this.handleOnBoardDragStart(item)}
-                            handleOnBoardDrop={this.handleOnBoardDrop(item.id)}
-                            tasks={this.boardTasks(item.id)} />)}
+                            handleOnTaskDrop={this.handleOnTaskDrop(board.id)}
+                            handleOnBoardDragStart={this.handleOnBoardDragStart(board)}
+                            handleOnBoardDrop={this.handleOnBoardDrop(board.id)}
+                            tasks={this.boardTasks(board.id)} />)}
                 </div>
             </div>
         );

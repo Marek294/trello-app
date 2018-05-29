@@ -53,13 +53,12 @@ class Board extends Component {
 
     render() {
         const { isDraggable, isBoardEditing, value } = this.state;
-        const { handleOnBoardDrop, tasks, handleOnTaskDragStart, handleOnTaskDrop, id, handleOnBoardDragStart, handleTitleChange, item: { title } } = this.props;
+        const { handleOnBoardDrop, tasks, handleOnTaskDragStart, handleOnTaskDrop, handleOnBoardDragStart, handleTitleChange, board: { title } } = this.props;
 
-        const displayTasks = tasks.map((item, i) => {
+        const displayTasks = tasks.map((task, i) => {
             return (
                 <Task key={i}
-                    boardId={id}
-                    item={item}
+                    task={task}
                     handleOnTaskDragStart={handleOnTaskDragStart}
                     handleOnTaskDrop={handleOnTaskDrop}
                     handleTitleChange={handleTitleChange}
