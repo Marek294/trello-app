@@ -34,8 +34,8 @@ class Boards extends Component {
 
     this.setState({
       draggedItem: item,
-      isBoardDragged: true,
-      isTaskDragged: false
+      isTaskDragged: false,
+      isBoardDragged: true
     });
   };
 
@@ -56,11 +56,8 @@ class Boards extends Component {
 
     const { draggedItem, isTaskDragged, isBoardDragged } = this.state;
 
-    if (isTaskDragged) {
-      if (draggedItem.board !== boardId)
-        this.props.changeTaskBoard(draggedItem, boardId);
-      return;
-    }
+    if (isTaskDragged && draggedItem.board !== boardId)
+      this.props.changeTaskBoard(draggedItem, boardId);
 
     if (isBoardDragged && draggedItem.id !== boardId)
       return this.props.changeBoardPosition(draggedItem, boardId);

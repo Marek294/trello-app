@@ -36,7 +36,7 @@ export default (state = boards, action) => {
   switch (action.type) {
     case CHANGE_BOARD_POSITION:
       ({ newArray, element, position } = getSlicedArray(
-        state,
+        [...state],
         action.draggedItem,
         action.dropedBoardId
       ));
@@ -49,7 +49,7 @@ export default (state = boards, action) => {
       return newArray;
 
     case CHANGE_BOARD_TITLE:
-      const array = state.slice();
+      const array = [...state];
 
       const itemIndex = array.findIndex(item => item.id === action.newItem.id);
       array.splice(itemIndex, 1, action.newItem);
