@@ -62,9 +62,12 @@ export default (state = tasks, action) => {
       const dropedIndex = newArray.findIndex(
         item => item.id === action.dropedTaskId
       );
-      newArray.splice(dropedIndex + position, 0, element);
 
-      return newArray;
+      return [
+        ...newArray.slice(0, dropedIndex + position),
+        element,
+        ...newArray.slice(dropedIndex + position)
+      ];
 
     case CHANGE_TASK_BOARD:
       ({ newArray, element, position } = getSlicedArray(
@@ -74,17 +77,18 @@ export default (state = tasks, action) => {
         action.boardId
       ));
 
-      newArray.push(element);
-
-      return newArray;
+      return [...newArray, element];
 
     case CHANGE_TASK_TITLE:
-      const array = [...state];
+      const itemIndex = [...state].findIndex(
+        item => item.id === action.newItem.id
+      );
 
-      const itemIndex = array.findIndex(item => item.id === action.newItem.id);
-      array.splice(itemIndex, 1, action.newItem);
-
-      return array;
+      return [
+        ...state.slice(0, itemIndex),
+        action.newItem,
+        ...state.slice(itemIndex + 1)
+      ];
 
     default:
       return state;

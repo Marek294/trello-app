@@ -36,11 +36,11 @@ class Board extends Component {
     });
 
   handleButtonClick = () => {
-    const { item } = this.props;
+    const { board } = this.props;
     const { value } = this.state;
 
     const newItem = {
-      ...item,
+      ...board,
       title: value
     };
 
